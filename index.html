@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rock-paper-scissors</title>
+    <!-- <link rel="stylesheet" href="rock-paper-scissors.css"> -->
+    <!-- <script src="rock-paper-scissors.js"></script> -->
+</head>
+
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: arial;
+        outline: none;
+        user-select: none;
+    }
+
+    body{
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+    }
+
+    .container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .title{
+        margin-top: 40px;
+        margin-bottom: 10px;
+        padding: 8px 15px;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        animation: shine 0.9s linear infinite;
+        border: 1px solid green;
+        border-radius: 30px;
+        background: rgba(0, 100, 0, 0.2);
+        cursor: pointer;
+    }
+
+    @keyframes shine {
+        0%{
+            text-shadow: 0;
+        }
+
+        20%{
+            text-shadow: 0px 0px 5px red;
+        }
+
+        40%{
+            text-shadow: 0px 0px 6px red;
+        }
+
+        60%{
+            text-shadow: 0px 0px 7px red;
+        }
+
+        80%{
+            text-shadow: 0px 0px 9px red;
+        }
+
+        100%{
+            text-shadow: 0;
+        }
+    }
+
+    .select-moves{
+        margin-top: 15px;
+        margin-bottom: 15px;
+        /* background: green; */
+        padding: 5px;
+    }
+
+    .select-moves button{
+        background: transparent;
+        border: 3px solid white;
+        color: white;
+        width: 150px;
+        height: 150px;
+        border-radius: 100px;
+        margin: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        /* background: rgba(0, 200, 100, 0.3); */
+    }
+
+    .select-moves button:hover{
+        background: rgba(0, 200, 10, 0.3);
+    }
+
+    button:focus{
+        outline: none;
+    }
+
+    .select-moves button img{
+        height: 70px;
+    }
+
+    .game-result{
+        /* background: green; */
+        padding: 5px;
+    }
+
+    .res-type{
+        font-size: 18px;
+        font-weight: bold;
+        /* background: green; */
+    }
+
+    .move-result{
+        /* background: green; */
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10px;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .move-result .you{
+        margin-right: 10px;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .move-result .computer{
+        margin-left: 10px;
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .move-result span{
+        font-weight: 500;
+    }
+
+    .move-result span img{
+        height: 60px;
+    }
+
+    .score{
+        background: rgba(0, 200, 0, 0.4);
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        color: whitesmoke;
+        font-weight: bold;
+        border-radius: 15px;
+        padding: 10px;
+        font-size: 18px;
+        cursor: default;
+    }
+
+    .reset-score{
+        /* background: green; */
+        margin-top: 20px;
+        padding: 10px;
+    }
+
+    .reset-score button{
+        background: white;
+        border: none;
+        padding: 7px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .other-functions{
+        /* background: green; */
+        padding: 4px;
+        position: absolute;
+        right: 0;
+        margin: 3px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .other-functions .settings{
+        margin-right: px;
+        padding: 2px;
+        cursor: pointer;
+    }
+
+    svg{
+        width: 35px;
+        height: 35px;
+    }
+
+    .settings svg path{
+        /* fill: white; */
+        stroke: white;
+        transition: 0.3s;
+    }
+
+    .settings svg:hover path{
+        stroke-width: 2;
+    }
+
+    /* SETTING CONTAINER STYLE */
+    .settings-container{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        display: none;
+        /* transition: opacity 0.4s ease-in-out; */
+    }
+
+    /* .settings-container.appear{
+        opacity: 1;
+    } */
+
+    .settings-container h4{
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        padding: 3px;
+    }
+
+    .settings-card{
+        width: 400px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background: rgba(0, 200, 0, 0.7);
+        color: black;
+        border-radius: 1px;
+        /* box-shadow: 0 0 7px rgba(0, 0, 0, 0.6); */
+        box-shadow: 0 0 3px white;
+    }
+
+    .close-settings-card{
+        position: absolute;
+        top:0;
+        right: 0;
+        /* margin: 2px; */
+        /* background: green; */
+        /* border-radius: 4px; */
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.2s;
+        padding: 2px 3px;
+    }
+
+    .close-settings-card svg{
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        transition: 0.2s;
+    }
+
+    .close-settings-card svg path{
+        stroke-width: 2;
+        fill: white;
+        stroke: white;
+    }
+
+    .close-settings-card:hover{
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .settings-card button{
+        display: none;
+    }
+
+    .settings-card ul{
+        padding: 2px 10px;
+    }
+
+    .settings-card ul li{
+        padding: 8px 15px;
+        font-size: 20px;
+        list-style: none;
+        border-bottom: 1px solid;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .settings-card ul li:hover{
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border-bottom: 1px solid black;
+    }
+
+    .settings-card ul li:last-child{
+        border: none;
+        background: none;
+        color: red;
+        cursor: not-allowed;
+    }
+
+    .settings-card ul li:nth-child(1){
+        background: none;
+        color: rgba(0, 0, 250, 0.7);
+        cursor: default;
+    }
+
+    .settings-card ul li:nth-child(2){
+        /* background: rgba(0, 0, 0, 0.3); */
+        cursor: not-allowed;
+        color: #333;
+        background: none;
+    }
+
+    .settings-card ul li:nth-child(3){
+        /* background: rgba(0, 0, 0, 0.3); */
+        cursor: not-allowed;
+        color: #333;
+        background: none;
+    }
+
+    .settings-card ul li:nth-child(5){
+        /* background: rgba(0, 0, 0, 0.3); */
+        cursor: not-allowed;
+        color: #333;
+        background: none;
+    }
+
+    .settings-card ul li:nth-child(4){
+        /* cursor: not-allowed; */
+        /* color: #333; */
+        /* background: rgba(0, 0, 0, 0.3); */
+    }
+
+    .settings-card ul li:nth-child(6){
+        cursor: not-allowed;
+        color: #333;
+        background: none; 
+        /* background: rgba(0, 0, 0, 0.3); */
+    }
+
+    .settings-card ul li:last-child:hover{
+        /* background: rgba(0, 0, 0, 0.3); */
+        background: none;
+    }
+
+    .dark-mode{
+        display: flex;
+        justify-content: space-between;
+        cursor: default;
+    }
+
+    .dark-mode input[type="checkbox"]{
+        padding: 10px;
+        border: none;
+        outline: none;
+    }
+
+    .light-mode{
+        background: rgba(0, 0, 100, 0.8);
+        color: black;
+    }
+
+    .change-name button{
+        display: block;
+        margin-top: 20px;
+        padding: 5px;
+        font-size: 16px;
+        letter-spacing: 1px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+    }
+
+    .change-name-container{
+        background: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        width: 400px;
+        height: 360px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        display: none;
+    }
+
+    .change-name{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* background: white; */
+        padding: 30px 25px;
+        width: 380px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 3px;
+        box-shadow: 0 1px 7px white;
+    }
+
+    .change-name h4{
+        margin-bottom: 15px;
+    }
+
+    .change-name input[type="text"]{
+        padding: 10px 25px 10px 15px;
+        border: 1px solid grey;
+        border-radius: 3px;
+        background: whitesmoke;
+        background: none;
+        color: white;
+
+    }
+
+    .save{
+        width: 47%;
+        background: skyblue;
+    }
+
+    .cancel{
+        width: 47%;
+        background: yellow;
+    }
+
+    .name-counter{
+        position: absolute;
+        top: 85px;
+        right: 35px;
+        display: none;
+        color: white;
+    }
+
+    /* .close-settings-card:hover svg path{
+        stroke: white;
+        fill: white;
+    } */
+
+    @media screen and (max-width: 560px) {
+
+        button:focus {
+            outline: none
+        }
+
+        .select-moves button{
+            background: transparent;
+            border: 3px solid white;
+            width: 90px;
+            height: 90px;
+            border-radius: 100px;
+            margin: 10px;
+            cursor: pointer;
+            /* background: rgba(0, 200, 100, 0.3); */
+        }
+
+        .select-moves button img{
+            height: 50px;
+        }
+
+        .move-result .you{
+            margin-right: 0px;
+            margin-left: 15px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .move-result .computer{
+            margin-left: 10px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .score{
+            font-size: 12px;
+        }
+        .settings-card{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 00, 0, 0.8);
+        }
+
+        .settings-card ul li{
+            padding: 10px 10px;
+            font-size: 18px;
+            list-style: none;
+            border-bottom: 1px solid;
+            cursor: pointer;
+            transition: 0.3s;
+            color: white;
+        }
+
+        .settings-card ul li:nth-child(1){
+            border-bottom: 1px solid rgba(0, 0, 250, 0.7);
+            color: rgba(0, 0, 250, 0.7);
+        }
+
+        .settings-card ul li:nth-child(1):hover{
+            border-bottom: 1px solid rgba(0, 0, 250, 0.7);
+        }
+
+        .settings-card ul li:nth-child(2):hover{
+            border-bottom: 1px solid #333;
+        }
+
+        .settings-card ul li:nth-child(3):hover{
+            border-bottom: 1px solid #333;
+        }
+
+        .settings-card ul li:nth-child(4):hover{
+            border-bottom: 1px solid white;
+        }
+
+        .settings-card ul li:nth-child(5):hover{
+            border-bottom: 1px solid #333;
+        }
+
+        .settings-card ul li:nth-child(6):hover{
+            border-bottom: 1px solid #333;
+        }
+
+        .settings-card ul li:hover{
+            background: none;
+            border-bottom: 1px solid white;
+        }
+
+        .settings-card ul li:last-child:hover{
+            border: none;
+        }
+
+        .close-settings-card{
+            display: none;
+        }
+
+        .settings-card button{
+            padding: 6px;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 17px;
+            font-weight: bold;
+            border: none;
+            background: rgba(0, 100, 0, 0.6);
+            color: white;
+            border-radius: 3px;
+            display: block;
+        }
+
+        .settings-container{
+            left: 400px;
+            transition: left 0.3s ease-in-out;
+            display: block;
+        }
+
+        svg{
+            width: 25px;
+            height: 25px;
+        }
+
+        .change-name-container{
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+        }
+
+        .change-name{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: whitesmoke;
+            padding: 25px 25px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            /* background: rgba(0, 0, 0, 0.9); */
+            border-radius: 3px;
+            box-shadow: 0 1px 7px rgba(0, 0, 0, 0.4);
+        }
+
+        .change-name h4{
+            margin-bottom: 15px;
+            color: black;
+        }
+
+        .change-name input[type="text"]{
+            padding: 10px 25px 10px 15px;
+            border: 1px solid grey;
+            border-radius: 3px;
+            background: whitesmoke;
+            background: none;
+            color: black;
+        }
+
+        .change-name .save{
+            background: green;
+        }
+
+        .change-name .cancel{
+            background: red;
+        }
+
+        .name-counter{
+            color: red;
+            top: 80px;
+            right: 35px;
+        }
+
+        .change-name button{
+            display: block;
+            margin-top: 20px;
+            padding: 5px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            width: 48%;
+        }
+    } 
+    
+    /* .computer-hand{
+        position: absolute;
+        top: 30%;
+        right: 5%;
+        transform: rotate(-90deg);
+        animation: shake 0.6s linear infinite;
+    }
+
+    .computer-hand button {
+        background: transparent;
+        border: 2px solid white;
+        border-radius: 100%;
+        border: none;
+        display: none;
+    }
+
+    @keyframes shake {
+        0%{
+            transform: rotate(-20deg);
+        }
+
+        50%{
+            transform: rotate(-160deg);
+        }
+        100%{
+            transform: rotate(0deg);
+        }
+        
+    } */
+
+</style>
+
+<body>
+    <div class="container">
+
+        <section class="title">
+            <h3>Rock Paper Scissors</h3>
+        </section>
+
+        <section class="select-moves">
+            <button title="Rock" onclick="playerMove('rock');"><img src="images/rock.png" alt="Rock"></button>
+            <button title="Paper" onclick="playerMove('paper');"><img src="images/paper.png" alt="Paper"></button>
+            <button title="Scissors" onclick="playerMove('scissors');"><img src="images/scissors.png" alt="Scissors"></button>
+        </section>
+
+        <section class="game-result">
+            <p class="res-type" style="padding: 30px"></p>
+        </section>
+
+        <section class="move-result"></section>
+
+        <div class="score">
+            <span class="wins"></span>
+        </div>
+        
+        <section class="reset-score">
+            <button onclick="
+                score.wins = 0;
+                score.losses = 0;
+                score.draws = 0;
+                score.gamesPlayed = 0;
+                localStorage.removeItem('score');
+                updateScore();
+            ">Reset Score + Games Played to '0'</button>
+        </section>
+
+        <div class="other-functions">
+            <div class="settings" title="Settings" id="show-settings" onclick="openSettings();">
+                <svg class="set-icon" width="800px" height="800px" viewBox="0 0 48 48" id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <style>.cls-1{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}</style>
+                    </defs>
+                    <path class="cls-1" d="M39.23,26a16.52,16.52,0,0,0,.14-2,16.52,16.52,0,0,0-.14-2l4.33-3.39a1,1,0,0,0,.25-1.31l-4.1-7.11a1,1,0,0,0-1.25-.44l-5.11,2.06a15.68,15.68,0,0,0-3.46-2l-.77-5.43a1,1,0,0,0-1-.86H19.9a1,1,0,0,0-1,.86l-.77,5.43a15.36,15.36,0,0,0-3.46,2L9.54,9.75a1,1,0,0,0-1.25.44L4.19,17.3a1,1,0,0,0,.25,1.31L8.76,22a16.66,16.66,0,0,0-.14,2,16.52,16.52,0,0,0,.14,2L4.44,29.39a1,1,0,0,0-.25,1.31l4.1,7.11a1,1,0,0,0,1.25.44l5.11-2.06a15.68,15.68,0,0,0,3.46,2l.77,5.43a1,1,0,0,0,1,.86h8.2a1,1,0,0,0,1-.86l.77-5.43a15.36,15.36,0,0,0,3.46-2l5.11,2.06a1,1,0,0,0,1.25-.44l4.1-7.11a1,1,0,0,0-.25-1.31ZM24,31.18A7.18,7.18,0,1,1,31.17,24,7.17,7.17,0,0,1,24,31.18Z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="settings-container open-setUp" id="setting-container">
+            <div class="settings-card">
+                <div class="close-settings-card" onclick="   
+                    const openSettingContainer = document.querySelector('.open-setUp');
+                    openSettingContainer.style.display = 'none';
+                    openSettingContainer.style.overflow = 'hideen';
+                    ">
+                    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z" fill="#0F0F0F"/>
+                    </svg>
+                </div>
+                <h4>Settings</h4>
+                <ul>
+                    <li class="dark-mode">
+                        Switch To Blue Mode
+                        <input type="checkbox" id="checkBox">
+                    </li>
+                    <li>Account</li>
+                    <li>Themes and Colors</li>
+                    <li class="nameForm">Change your name</li>
+                    <li>Font Size</li>
+                    <li>History</li>
+                    <li id="logout">Logout</li>
+                </ul>
+
+                <button onclick="
+                    const settingContainer = document.getElementById('setting-container');
+                    settingContainer.style.left = '400px';
+                ">Close Settings</button>
+
+                <div class="change-name-container">
+                    <div class="change-name">
+                        <h4>Enter Your Name</h4>
+                        <input type="text" name="" id="username" maxlength="8">
+                        <span class="name-counter">clear</span>
+                        <div style="display: flex; justify-content: space-between; padding: 0 2px;">
+                            <button class="save save-name" onclick="saveName();">Save</button>
+
+                            <button class="cancel" onclick="
+                               const nameForm = document.querySelector('.change-name-container');
+                               nameForm.style.display = 'none';
+                               nameInput.value = '';
+                               nameCounter.style.display = 'none';
+                               nameCounter.style.display = 'none';
+                            ">close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+
+    // TRIGGER NAME INPUT SPACE
+
+    const nameForm = document.querySelector('.change-name-container');
+    const nameFormTrigger = document.querySelector('.nameForm');
+
+    nameFormTrigger.addEventListener('click', () => {
+        nameForm.style.display = 'block';
+    });
+
+    // NAME INPUT AREA
+    const nameInput = document.getElementById('username');
+    const nameCounter = document.querySelector('.name-counter');
+
+        nameInput.addEventListener('input', () => {
+            if(nameInput.value.trim() !== '') {
+                nameCounter.style.display = 'block';
+            } else {
+                nameCounter.style.display = 'none';
+            }
+        })
+
+        nameCounter.addEventListener('click', () => {
+            nameInput.value = '';
+            nameCounter.style.display = 'none';
+        })
+
+
+    /*
+        THIS IS THE CODE THAT TRIGGERS ALL IN GAME ACTIONS
+        WHICH INCLUDES USER SELECTIONS OF THE PLAY, AI SELECTION...
+    */
+    let score = JSON.parse(localStorage.getItem('score')) || {
+        wins: 0,
+        losses: 0,
+        draws: 0,
+        gamesPlayed: 0
+    };
+
+    if(score === null){
+        score = {
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            gamesPlayed: 0
+        };
+    };
+
+    let userName = localStorage.getItem('user');
+
+    updateScore();
+
+    function playerMove(playerPick) {
+
+        if(playerPick) {
+            score.gamesPlayed = score.gamesPlayed + 1;
+            console.log(score.gamesPlayed);
+        }
+        
+        const playerButton = document.querySelector('.rock');
+        const computer = computerMove();
+
+        let result = '';
+
+        if(playerPick === 'rock'){
+
+            if(computer === 'rock') {
+
+                result = 'Draw Game';
+
+            } else if(computer === 'paper') {
+                
+                result = 'You Lose.';
+                
+            } else if(computer === 'scissors') {
+
+                result = 'You Win.';
+            }
+
+        } else if(playerPick === 'paper'){
+            
+            if(computer === 'paper') {
+
+            result = 'Draw Game';
+
+            } else if(computer === 'rock') {
+
+            result = 'You Win.';
+
+            } else if(computer === 'scissors') {
+
+            result = 'You Lose.';
+            }
+            
+        } else if(playerPick === 'scissors') {
+            if(computer === 'paper') {
+
+            result = 'You Win.';
+
+            } else if(computer === 'rock') {
+
+            result = 'You Lose.';
+
+            } else if(computer === 'scissors') {
+
+            result = 'Draw Game';
+            }
+        }
+        
+
+        if(result === 'You Win.') {
+            score.wins = score.wins + 1;
+        } else if(result === 'You Lose.') {
+            score.losses = score.losses + 1;
+        } else if(result === 'Draw Game') {
+            score.draws = score.draws + 1;
+        }
+
+        localStorage.setItem('score', JSON.stringify(score));
+
+        updateScore();
+
+        
+
+        document.querySelector('.move-result').innerHTML = 
+        `<div class="you">${userName} <span class="your-icon"><img src="images/${playerPick}.png" alt=": ${playerPick}"></span></div>
+        <div class="computer"><span class="comp-icon"><img src="images/${computer}.png" alt="${computer}: "></span>A.I</div>`;
+
+        document.querySelector('.res-type').innerHTML = result;
+    }
+
+    function saveName() {
+        const nameInput = document.getElementById('username');
+        userName = nameInput.value;
+
+        localStorage.setItem('user', userName);
+
+        alert(`username ${userName} has been saved suceesfully.`);
+        
+    }
+
+    function updateScore() {
+        document.querySelector('.wins').innerHTML = `Games Played: ${score.gamesPlayed} | Wins: ${score.wins} | Losses: ${score.losses} | Draws: ${score.draws}`;
+    }
+
+    function computerMove() {
+        const pickComputerMove = Math.random();
+        let computerMove = '';
+        
+        if(pickComputerMove > 0 && pickComputerMove < 1/3) {
+
+            computerMove = 'rock';
+
+        } else if(pickComputerMove > 1/3 && pickComputerMove < 2/3) {
+        
+            computerMove = 'paper';
+
+        } else if (pickComputerMove > 2/3 && pickComputerMove < 1) {
+
+            computerMove = 'scissors';
+        }
+        
+        // console.log(computerMove);
+
+        document.querySelector('.res-type').innerHTML = computerMove;
+
+        return computerMove;
+    }
+
+    // FOR MEDIA SCREENS
+    function openSettings() {
+        const settingContainer = document.getElementById('setting-container');
+        settingContainer.style.left = '0px';
+    }
+
+
+
+    // FOR LARGER SCREENS
+    const settingButton = document.getElementById('show-settings');
+    const openSettingContainer = document.querySelector('.open-setUp');
+
+    settingButton.addEventListener('click', () => {
+        openSettingContainer.style.display = 'block';
+    })
+
+    // CHANGE TO LIGHT MODE
+
+    const lightMode = document.getElementById('checkBox');
+    const body = document.body;
+    const button = document.querySelector('.set-icon');
+
+    const isLight = localStorage.getItem('lightMode') === 'enabled';
+
+    if(isLight) {
+        enableLightMode();
+        lightMode.checked = true;
+    }
+
+    lightMode.addEventListener('change', () => {
+
+        if(lightMode.checked) {
+
+            enableLightMode();
+            localStorage.setItem('lightMode', 'enabled');
+
+        } else{
+            disableLightMode();
+            localStorage.setItem('lightMode', 'disabled');
+        }
+    })
+
+    function enableLightMode() {
+        body.classList.add('light-mode');
+    }
+
+    function disableLightMode() {
+        body.classList.remove('light-mode');
+    }
+
+</script>
+
+</body>
+</html>
